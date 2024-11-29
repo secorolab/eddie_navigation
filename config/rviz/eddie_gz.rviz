@@ -25,7 +25,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: LaserScan
   - Class: nav2_rviz_plugins/Navigation 2
     Name: Navigation 2
 Visualization Manager:
@@ -423,6 +423,8 @@ Visualization Manager:
           Value: false
         eddie_right_arm_tool_frame:
           Value: false
+        map:
+          Value: true
         odom:
           Value: true
       Marker Scale: 1
@@ -431,78 +433,79 @@ Visualization Manager:
       Show Axes: true
       Show Names: false
       Tree:
-        eddie_base_footprint:
-          eddie_base_link:
-            eddie_front_left_drive_attachment_link:
-              eddie_front_left_drive_struct_link:
-                eddie_front_left_drive_l_wheel_link:
-                  {}
-                eddie_front_left_drive_r_wheel_link:
-                  {}
-            eddie_front_right_drive_attachment_link:
-              eddie_front_right_drive_struct_link:
-                eddie_front_right_drive_l_wheel_link:
-                  {}
-                eddie_front_right_drive_r_wheel_link:
-                  {}
-            eddie_front_right_laser_attachment_link:
-              eddie_front_right_laser_link:
-                {}
-            eddie_imu_link:
-              {}
-            eddie_left_arm_attachment_link:
-              eddie_left_arm_base_link:
-                eddie_left_arm_shoulder_link:
-                  eddie_left_arm_half_arm_1_link:
-                    eddie_left_arm_half_arm_2_link:
-                      eddie_left_arm_forearm_link:
-                        eddie_left_arm_spherical_wrist_1_link:
-                          eddie_left_arm_spherical_wrist_2_link:
-                            eddie_left_arm_bracelet_link:
-                              eddie_left_arm_end_effector_link:
-                                eddie_left_arm_camera_color_frame:
-                                  {}
-                                eddie_left_arm_camera_depth_frame:
-                                  {}
-                                eddie_left_arm_camera_link:
-                                  {}
-                                eddie_left_arm_tool_frame:
-                                  {}
-            eddie_rear_left_drive_attachment_link:
-              eddie_rear_left_drive_struct_link:
-                eddie_rear_left_drive_l_wheel_link:
-                  {}
-                eddie_rear_left_drive_r_wheel_link:
-                  {}
-            eddie_rear_left_laser_attachment_link:
-              eddie_rear_left_laser_link:
-                {}
-            eddie_rear_right_drive_attachment_link:
-              eddie_rear_right_drive_struct_link:
-                eddie_rear_right_drive_l_wheel_link:
-                  {}
-                eddie_rear_right_drive_r_wheel_link:
-                  {}
-            eddie_right_arm_attachment_link:
-              eddie_right_arm_base_link:
-                eddie_right_arm_shoulder_link:
-                  eddie_right_arm_half_arm_1_link:
-                    eddie_right_arm_half_arm_2_link:
-                      eddie_right_arm_forearm_link:
-                        eddie_right_arm_spherical_wrist_1_link:
-                          eddie_right_arm_spherical_wrist_2_link:
-                            eddie_right_arm_bracelet_link:
-                              eddie_right_arm_end_effector_link:
-                                eddie_right_arm_camera_color_frame:
-                                  {}
-                                eddie_right_arm_camera_depth_frame:
-                                  {}
-                                eddie_right_arm_camera_link:
-                                  {}
-                                eddie_right_arm_tool_frame:
-                                  {}
-        odom:
+        map:
           {}
+        odom:
+          eddie_base_footprint:
+            eddie_base_link:
+              eddie_front_left_drive_attachment_link:
+                eddie_front_left_drive_struct_link:
+                  eddie_front_left_drive_l_wheel_link:
+                    {}
+                  eddie_front_left_drive_r_wheel_link:
+                    {}
+              eddie_front_right_drive_attachment_link:
+                eddie_front_right_drive_struct_link:
+                  eddie_front_right_drive_l_wheel_link:
+                    {}
+                  eddie_front_right_drive_r_wheel_link:
+                    {}
+              eddie_front_right_laser_attachment_link:
+                eddie_front_right_laser_link:
+                  {}
+              eddie_imu_link:
+                {}
+              eddie_left_arm_attachment_link:
+                eddie_left_arm_base_link:
+                  eddie_left_arm_shoulder_link:
+                    eddie_left_arm_half_arm_1_link:
+                      eddie_left_arm_half_arm_2_link:
+                        eddie_left_arm_forearm_link:
+                          eddie_left_arm_spherical_wrist_1_link:
+                            eddie_left_arm_spherical_wrist_2_link:
+                              eddie_left_arm_bracelet_link:
+                                eddie_left_arm_end_effector_link:
+                                  eddie_left_arm_camera_color_frame:
+                                    {}
+                                  eddie_left_arm_camera_depth_frame:
+                                    {}
+                                  eddie_left_arm_camera_link:
+                                    {}
+                                  eddie_left_arm_tool_frame:
+                                    {}
+              eddie_rear_left_drive_attachment_link:
+                eddie_rear_left_drive_struct_link:
+                  eddie_rear_left_drive_l_wheel_link:
+                    {}
+                  eddie_rear_left_drive_r_wheel_link:
+                    {}
+              eddie_rear_left_laser_attachment_link:
+                eddie_rear_left_laser_link:
+                  {}
+              eddie_rear_right_drive_attachment_link:
+                eddie_rear_right_drive_struct_link:
+                  eddie_rear_right_drive_l_wheel_link:
+                    {}
+                  eddie_rear_right_drive_r_wheel_link:
+                    {}
+              eddie_right_arm_attachment_link:
+                eddie_right_arm_base_link:
+                  eddie_right_arm_shoulder_link:
+                    eddie_right_arm_half_arm_1_link:
+                      eddie_right_arm_half_arm_2_link:
+                        eddie_right_arm_forearm_link:
+                          eddie_right_arm_spherical_wrist_1_link:
+                            eddie_right_arm_spherical_wrist_2_link:
+                              eddie_right_arm_bracelet_link:
+                                eddie_right_arm_end_effector_link:
+                                  eddie_right_arm_camera_color_frame:
+                                    {}
+                                  eddie_right_arm_camera_depth_frame:
+                                    {}
+                                  eddie_right_arm_camera_link:
+                                    {}
+                                  eddie_right_arm_tool_frame:
+                                    {}
       Update Interval: 0
       Value: true
     - Alpha: 0.699999988079071
@@ -567,6 +570,40 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /odom
       Value: false
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 0.28460001945495605
+        Min Value: 0.28459998965263367
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz_default_plugins/LaserScan
+      Color: 255; 255; 255
+      Color Transformer: Intensity
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 0
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: LaserScan
+      Position Transformer: XYZ
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.009999999776482582
+      Style: Points
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /scan
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -613,7 +650,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 13.058128356933594
+      Distance: 11.586970329284668
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
