@@ -6,7 +6,6 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
-        - /Odometry1
       Splitter Ratio: 0.6056105494499207
     Tree Height: 1068
   - Class: rviz_common/Selection
@@ -307,10 +306,6 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        odom:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
       Mass Properties:
         Inertia: false
         Mass: false
@@ -428,8 +423,6 @@ Visualization Manager:
           Value: false
         eddie_right_arm_tool_frame:
           Value: false
-        map:
-          Value: true
         odom:
           Value: true
       Marker Scale: 1
@@ -438,78 +431,78 @@ Visualization Manager:
       Show Axes: true
       Show Names: false
       Tree:
-        map:
-          odom:
-            eddie_base_footprint:
-              eddie_base_link:
-                eddie_front_left_drive_attachment_link:
-                  eddie_front_left_drive_struct_link:
-                    eddie_front_left_drive_l_wheel_link:
-                      {}
-                    eddie_front_left_drive_r_wheel_link:
-                      {}
-                eddie_front_right_drive_attachment_link:
-                  eddie_front_right_drive_struct_link:
-                    eddie_front_right_drive_l_wheel_link:
-                      {}
-                    eddie_front_right_drive_r_wheel_link:
-                      {}
-                eddie_front_right_laser_attachment_link:
-                  eddie_front_right_laser_link:
-                    {}
-                eddie_imu_link:
+        eddie_base_footprint:
+          eddie_base_link:
+            eddie_front_left_drive_attachment_link:
+              eddie_front_left_drive_struct_link:
+                eddie_front_left_drive_l_wheel_link:
                   {}
-                eddie_left_arm_attachment_link:
-                  eddie_left_arm_base_link:
-                    eddie_left_arm_shoulder_link:
-                      eddie_left_arm_half_arm_1_link:
-                        eddie_left_arm_half_arm_2_link:
-                          eddie_left_arm_forearm_link:
-                            eddie_left_arm_spherical_wrist_1_link:
-                              eddie_left_arm_spherical_wrist_2_link:
-                                eddie_left_arm_bracelet_link:
-                                  eddie_left_arm_end_effector_link:
-                                    eddie_left_arm_camera_color_frame:
-                                      {}
-                                    eddie_left_arm_camera_depth_frame:
-                                      {}
-                                    eddie_left_arm_camera_link:
-                                      {}
-                                    eddie_left_arm_tool_frame:
-                                      {}
-                eddie_rear_left_drive_attachment_link:
-                  eddie_rear_left_drive_struct_link:
-                    eddie_rear_left_drive_l_wheel_link:
-                      {}
-                    eddie_rear_left_drive_r_wheel_link:
-                      {}
-                eddie_rear_left_laser_attachment_link:
-                  eddie_rear_left_laser_link:
-                    {}
-                eddie_rear_right_drive_attachment_link:
-                  eddie_rear_right_drive_struct_link:
-                    eddie_rear_right_drive_l_wheel_link:
-                      {}
-                    eddie_rear_right_drive_r_wheel_link:
-                      {}
-                eddie_right_arm_attachment_link:
-                  eddie_right_arm_base_link:
-                    eddie_right_arm_shoulder_link:
-                      eddie_right_arm_half_arm_1_link:
-                        eddie_right_arm_half_arm_2_link:
-                          eddie_right_arm_forearm_link:
-                            eddie_right_arm_spherical_wrist_1_link:
-                              eddie_right_arm_spherical_wrist_2_link:
-                                eddie_right_arm_bracelet_link:
-                                  eddie_right_arm_end_effector_link:
-                                    eddie_right_arm_camera_color_frame:
-                                      {}
-                                    eddie_right_arm_camera_depth_frame:
-                                      {}
-                                    eddie_right_arm_camera_link:
-                                      {}
-                                    eddie_right_arm_tool_frame:
-                                      {}
+                eddie_front_left_drive_r_wheel_link:
+                  {}
+            eddie_front_right_drive_attachment_link:
+              eddie_front_right_drive_struct_link:
+                eddie_front_right_drive_l_wheel_link:
+                  {}
+                eddie_front_right_drive_r_wheel_link:
+                  {}
+            eddie_front_right_laser_attachment_link:
+              eddie_front_right_laser_link:
+                {}
+            eddie_imu_link:
+              {}
+            eddie_left_arm_attachment_link:
+              eddie_left_arm_base_link:
+                eddie_left_arm_shoulder_link:
+                  eddie_left_arm_half_arm_1_link:
+                    eddie_left_arm_half_arm_2_link:
+                      eddie_left_arm_forearm_link:
+                        eddie_left_arm_spherical_wrist_1_link:
+                          eddie_left_arm_spherical_wrist_2_link:
+                            eddie_left_arm_bracelet_link:
+                              eddie_left_arm_end_effector_link:
+                                eddie_left_arm_camera_color_frame:
+                                  {}
+                                eddie_left_arm_camera_depth_frame:
+                                  {}
+                                eddie_left_arm_camera_link:
+                                  {}
+                                eddie_left_arm_tool_frame:
+                                  {}
+            eddie_rear_left_drive_attachment_link:
+              eddie_rear_left_drive_struct_link:
+                eddie_rear_left_drive_l_wheel_link:
+                  {}
+                eddie_rear_left_drive_r_wheel_link:
+                  {}
+            eddie_rear_left_laser_attachment_link:
+              eddie_rear_left_laser_link:
+                {}
+            eddie_rear_right_drive_attachment_link:
+              eddie_rear_right_drive_struct_link:
+                eddie_rear_right_drive_l_wheel_link:
+                  {}
+                eddie_rear_right_drive_r_wheel_link:
+                  {}
+            eddie_right_arm_attachment_link:
+              eddie_right_arm_base_link:
+                eddie_right_arm_shoulder_link:
+                  eddie_right_arm_half_arm_1_link:
+                    eddie_right_arm_half_arm_2_link:
+                      eddie_right_arm_forearm_link:
+                        eddie_right_arm_spherical_wrist_1_link:
+                          eddie_right_arm_spherical_wrist_2_link:
+                            eddie_right_arm_bracelet_link:
+                              eddie_right_arm_end_effector_link:
+                                eddie_right_arm_camera_color_frame:
+                                  {}
+                                eddie_right_arm_camera_depth_frame:
+                                  {}
+                                eddie_right_arm_camera_link:
+                                  {}
+                                eddie_right_arm_tool_frame:
+                                  {}
+        odom:
+          {}
       Update Interval: 0
       Value: true
     - Alpha: 0.699999988079071
@@ -552,7 +545,7 @@ Visualization Manager:
           Scale: 1
           Value: true
         Value: true
-      Enabled: true
+      Enabled: false
       Keep: 100
       Name: Odometry
       Position Tolerance: 0.10000000149011612
@@ -573,11 +566,11 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /odom
-      Value: true
+      Value: false
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: eddie_base_link
+    Fixed Frame: map
     Frame Rate: 30
   Name: root
   Tools:
@@ -620,7 +613,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 15.119294166564941
+      Distance: 13.058128356933594
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1

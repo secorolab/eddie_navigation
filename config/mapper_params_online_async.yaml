@@ -17,7 +17,7 @@ slam_toolbox:
     base_frame: eddie_base_footprint
     scan_topic: /scan
     # use_map_saver: true
-    mode: mapping #localization
+    mode: localization
 
     debug_logging: false
     throttle_scans: 1 # (default: 1) Process 1 out of every this many scans (set it to a higher number to skip more scans) 
