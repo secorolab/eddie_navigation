@@ -28,7 +28,7 @@ from nav2_common.launch import RewrittenYaml
 
 def generate_launch_description():
     # Get the launch directory
-    bringup_dir = get_package_share_directory("nav2_bringup")
+    eddie_nav_dir = get_package_share_directory("eddie_navigation")
 
     namespace = LaunchConfiguration("namespace")
     use_sim_time = LaunchConfiguration("use_sim_time")
@@ -45,10 +45,10 @@ def generate_launch_description():
         "smoother_server",
         "planner_server",
         "behavior_server",
-        "velocity_smoother",
-        "collision_monitor",
         "bt_navigator",
         "waypoint_follower",
+        "velocity_smoother",
+        "collision_monitor",
         # 'docking_server',
     ]
 
@@ -61,7 +61,7 @@ def generate_launch_description():
     remappings = [("/tf", "tf"), ("/tf_static", "tf_static")]
 
     # Create our own temporary YAML files that include substitutions
-    param_substitutions = {"autostart": autostart}
+    param_substitutions = {"use_sim_time": use_sim_time, "autostart": autostart}
 
     configured_params = ParameterFile(
         RewrittenYaml(
@@ -89,7 +89,7 @@ def generate_launch_description():
 
     declare_params_file_cmd = DeclareLaunchArgument(
         "params_file",
-        default_value=os.path.join(bringup_dir, "params", "nav2_params.yaml"),
+        default_value=os.path.join(eddie_nav_dir, "params", "nav2_params.yaml"),
         description="Full path to the ROS2 parameters file to use for all launched nodes",
     )
 
@@ -213,23 +213,16 @@ def generate_launch_description():
                 remappings=remappings,
             ),
             Node(
-                package="opennav_docking",
-                executable="opennav_docking",
-                name="docking_server",
-                output="screen",
-                respawn=use_respawn,
-                respawn_delay=2.0,
-                parameters=[configured_params],
-                arguments=["--ros-args", "--log-level", log_level],
-                remappings=remappings,
-            ),
-            Node(
                 package="nav2_lifecycle_manager",
                 executable="lifecycle_manager",
                 name="lifecycle_manager_navigation",
                 output="screen",
                 arguments=["--ros-args", "--log-level", log_level],
-                parameters=[{"autostart": autostart}, {"node_names": lifecycle_nodes}],
+                parameters=[
+                    {"use_sim_time": use_sim_time},
+                    {"autostart": autostart},
+                    {"node_names": lifecycle_nodes},
+                ],
             ),
         ],
     )
@@ -298,18 +291,15 @@ def generate_launch_description():
                         remappings=remappings,
                     ),
                     ComposableNode(
-                        package="opennav_docking",
-                        plugin="opennav_docking::DockingServer",
-                        name="docking_server",
-                        parameters=[configured_params],
-                        remappings=remappings,
-                    ),
-                    ComposableNode(
                         package="nav2_lifecycle_manager",
                         plugin="nav2_lifecycle_manager::LifecycleManager",
                         name="lifecycle_manager_navigation",
                         parameters=[
-                            {"autostart": autostart, "node_names": lifecycle_nodes}
+                            {
+                                "use_sim_time": use_sim_time,
+                                "autostart": autostart,
+                                "node_names": lifecycle_nodes,
+                            }
                         ],
                     ),
                 ],
