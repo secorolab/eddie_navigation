@@ -192,7 +192,7 @@ controller_server:
 controller_server_rclcpp_node:
   ros__parameters:
     use_sim_time: True
-local_costmap:
+local_costmap/local_costmap:
   ros__parameters:
     use_sim_time: true
     update_frequency: 1.0
@@ -233,7 +233,7 @@ local_costmap:
       plugin: "nav2_costmap_2d::StaticLayer"
       map_subscribe_transient_local: True
     always_send_full_costmap: True
-global_costmap:
+global_costmap/global_costmap:
   ros__parameters:
     use_sim_time: true
     update_frequency: 1.0
