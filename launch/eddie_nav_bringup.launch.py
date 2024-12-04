@@ -9,6 +9,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 def generate_launch_description():
     eddie_nav_dir = get_package_share_directory("eddie_navigation")
     map_name = os.environ["ROBOT_ENV"]
+    # to get map_name as launch argument: https://robotics.stackexchange.com/questions/104340/getting-the-value-of-launchargument-inside-python-launch-file
     map_file = os.path.join(eddie_nav_dir, "maps", map_name + ".yaml")
     use_sim_time = True
 
@@ -49,18 +50,20 @@ def generate_launch_description():
         package="tf2_ros",
         executable="static_transform_publisher",
         name="static_transform_publisher",
+        parameters=[{"use_sim_time": use_sim_time}],
         arguments=["0", "0", "0", "0", "0", "0", "map", "odom"],
     )
 
-    # navigation_node = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource([eddie_nav_dir, "/launch/navigation.launch.py"]),
-    #     launch_arguments={"use_sim_time": str(use_sim_time)}.items(),
-    # )
+    navigation_node = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([eddie_nav_dir, "/launch/navigation.launch.py"]),
+        launch_arguments={"use_sim_time": str(use_sim_time)}.items(),
+    )
 
     rviz_launch_cmd = Node(
         package="rviz2",
         executable="rviz2",
         name="rviz2",
+        parameters=[{"use_sim_time": True}],
         arguments=[
             "-d"
             + os.path.join(
@@ -80,6 +83,6 @@ def generate_launch_description():
             lifecycle_manager,
             tf2_ros,
             localization_node,
-            # navigation_node,
+            navigation_node,
         ]
     )
