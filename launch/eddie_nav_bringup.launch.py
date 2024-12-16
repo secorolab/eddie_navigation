@@ -1,88 +1,69 @@
-import os
-from ament_index_python.packages import get_package_share_directory
-from launch import LaunchDescription
-from launch_ros.actions import Node
-from launch.actions import IncludeLaunchDescription
-from launch.launch_description_sources import PythonLaunchDescriptionSource
+from simple_launch import SimpleLauncher
 
 
 def generate_launch_description():
-    eddie_nav_dir = get_package_share_directory("eddie_navigation")
-    map_name = os.environ["ROBOT_ENV"]
-    # to get map_name as launch argument: https://robotics.stackexchange.com/questions/104340/getting-the-value-of-launchargument-inside-python-launch-file
-    map_file = os.path.join(eddie_nav_dir, "maps", map_name + ".yaml")
-    use_sim_time = True
+    sl = SimpleLauncher(use_sim_time=True)
 
-    map_server = Node(
+    sl.declare_arg("use_sim_time", "true")
+    sl.declare_arg("map_name", "map_trial_1.yaml")
+
+    sl.node(
         package="nav2_map_server",
         executable="map_server",
         name="map_server",
         output="screen",
         parameters=[
-            {"use_sim_time": use_sim_time},
-            {"yaml_filename": map_file},
+            {"use_sim_time": sl.arg("use_sim_time")},
+            {"yaml_filename": sl.find("eddie_navigation", sl.arg("map_name"), "maps")},
             {"topic_name": "map"},
             {"frame_id": "map"},
         ],
     )
 
-    lifecycle_manager = Node(
+    sl.node(
         package="nav2_lifecycle_manager",
         executable="lifecycle_manager",
         name="lifecycle_manager_mapper",
         output="screen",
         emulate_tty=True,
         parameters=[
-            {"use_sim_time": use_sim_time},
+            {"use_sim_time": sl.arg("use_sim_time")},
             {"autostart": True},
             {"node_names": ["map_server"]},
         ],
     )
 
-    localization_node = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [eddie_nav_dir, "/launch/localization.launch.py"]
-        ),
-        launch_arguments={"use_sim_time": str(use_sim_time)}.items(),
+    sl.include(
+        "eddie_navigation",
+        "localization.launch.py",
+        launch_arguments={"use_sim_time": sl.arg("use_sim_time")},
     )
 
-    tf2_ros = Node(
+    sl.node(
         package="tf2_ros",
         executable="static_transform_publisher",
         name="static_transform_publisher",
-        parameters=[{"use_sim_time": use_sim_time}],
+        output="screen",
+        parameters=[{"use_sim_time": sl.arg("use_sim_time")}],
         arguments=["0", "0", "0", "0", "0", "0", "map", "odom"],
     )
 
-    navigation_node = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([eddie_nav_dir, "/launch/navigation.launch.py"]),
-        launch_arguments={"use_sim_time": str(use_sim_time)}.items(),
+    sl.include(
+        "eddie_navigation",
+        "navigation.launch.py",
+        launch_arguments={"use_sim_time": sl.arg("use_sim_time")},
     )
 
-    rviz_launch_cmd = Node(
+    sl.node(
         package="rviz2",
         executable="rviz2",
         name="rviz2",
-        parameters=[{"use_sim_time": True}],
+        output="screen",
+        parameters=[{"use_sim_time": sl.arg("use_sim_time")}],
         arguments=[
-            "-d"
-            + os.path.join(
-                get_package_share_directory("eddie_navigation"),
-                "config/rviz",
-                "eddie_nav.rviz",
-            )
+            "-d",
+            sl.find("eddie_navigation", "eddie_nav.rviz", "config/rviz"),
         ],
     )
 
-    print("map_file: ", map_file)
-
-    return LaunchDescription(
-        [
-            rviz_launch_cmd,
-            map_server,
-            lifecycle_manager,
-            tf2_ros,
-            localization_node,
-            navigation_node,
-        ]
-    )
+    return sl.launch_description()
