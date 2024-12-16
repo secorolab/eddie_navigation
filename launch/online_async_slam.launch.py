@@ -4,6 +4,8 @@ from simple_launch import SimpleLauncher
 def generate_launch_description():
     sl = SimpleLauncher(use_sim_time=True)
 
+    sl.declare_arg("use_sim_time", "true")
+
     # launch eddie simulation
     sl.include("eddie_gazebo", "run_sim.launch.py")
 
@@ -14,7 +16,7 @@ def generate_launch_description():
         "eddie_navigation",
         "slam.launch.py",
         launch_arguments={
-            "use_sim_time": "true",
+            "use_sim_time": sl.arg("use_sim_time"),
             "autostart": "true",
             "use_lifecycle_manager": "false",
             "slam_params_file": sl.find(

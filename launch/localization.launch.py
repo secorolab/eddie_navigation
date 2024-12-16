@@ -1,34 +1,30 @@
-import os
-
-from ament_index_python.packages import get_package_share_directory
-from launch import LaunchDescription
-from launch_ros.actions import Node
+from simple_launch import SimpleLauncher
 
 
 def generate_launch_description():
-    nav2_yaml = os.path.join(
-        get_package_share_directory("eddie_navigation"), "config", "nav2_params.yaml"
+    sl = SimpleLauncher()
+    sl.declare_arg("use_sim_time", "True")
+
+    nav2_yaml = sl.find("eddie_navigation", "nav2_params.yaml", "config")
+
+    sl.node(
+        package="nav2_amcl",
+        executable="amcl",
+        name="amcl",
+        output="screen",
+        parameters=[nav2_yaml],
     )
 
-    return LaunchDescription(
-        [
-            Node(
-                package="nav2_amcl",
-                executable="amcl",
-                name="amcl",
-                output="screen",
-                parameters=[nav2_yaml],
-            ),
-            Node(
-                package="nav2_lifecycle_manager",
-                executable="lifecycle_manager",
-                name="lifecycle_manager_localization",
-                output="screen",
-                parameters=[
-                    {"use_sim_time": True},
-                    {"autostart": True},
-                    {"node_names": ["amcl"]},
-                ],
-            ),
-        ]
+    sl.node(
+        package="nav2_lifecycle_manager",
+        executable="lifecycle_manager",
+        name="lifecycle_manager_localization",
+        output="screen",
+        parameters=[
+            {"use_sim_time": sl.arg("use_sim_time")},
+            {"autostart": True},
+            {"node_names": ["amcl"]},
+        ],
     )
+
+    return sl.launch_description()
