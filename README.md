@@ -1,7 +1,8 @@
-# Navigation of Eddie robot in Gazebo
+# Navigation of Eddie robot
 
-This repository provides configured ROS2 mapping, localisation, and navigation packages for the Eddie robot in Gazebo
-simulator.
+> [!NOTE]
+> This repository provides configured ROS2 mapping, localisation, and navigation packages for the
+Eddie robot in Gazebo simulator.
 
 ## ROS and Gazebo
 
@@ -9,31 +10,49 @@ simulator.
   [Installation](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html)
 - **Gazebo Version**: Harmonic
 
-### Linked Libraries and Repositories
+### Dependencies
 
-Install following libraries
+#### Nav2
 
   ```bash
-  sudo apt-get install ros-jazzy-ros-gz ros-jazzy-ros2-control ros-jazzy-ros2-controllers libgsl-dev
+  sudo apt-get install ros-jazzy-navigation2 \
+                        ros-jazzy-nav2-bringup \
+                        ros-jazzy-slam-toolbox
   ```
 
-The following repositories were tested with specific versions or commits:
+#### Eddie Gazebo
 
-- [eddie_navigation](https://github.com/secorolab/eddie_navigation.git): `main` branch
-- [eddie_description](https://github.com/secorolab/eddie_description.git): `main` branch
-- [eddie_gazebo](https://github.com/secorolab/eddie_gazebo.git): `main` branch
-- [kelo_interfaces](https://github.com/secorolab/kelo_interfaces): `main` branch
-- [kelo_tulip](https://github.com/secorolab/kelo_tulip): `ros2` branch
+- Clone the [main](https://github.com/secorolab/eddie_gazebo.git) branch into the workspace
 
-## Instructions to Start Navigation
+  > Also, install the dependencies of the package
 
-1. Run eddie in simulation
+- Clone the `eddie_navigation` package into the workspace
+
+  ```bash
+  cd ~/eddie_ws/src
+
+  git clone https://github.com/secorolab/eddie_navigation.git
+  ```
+
+## Build and source the workpace
+
+```bash
+cd ~/eddie_ws
+
+colcon build
+
+source install/setup.bash
+```
+
+## Run Navigation
+
+1. Launch the `eddie` in simulation
 
     ```bash
     ros2 launch eddie_gazebo run_sim.launch.py use_kelo_tulip:=true
     ```
 
-2. If map of the arena is avaialble, skip to next step, or
+2. If map of the arena is avaialble, skip to next step, otherwise follow the steps to create a map
 
     a. start mapping using `slam_toolbox`
 
@@ -53,16 +72,12 @@ The following repositories were tested with specific versions or commits:
     ros2 run nav2_map_server map_saver_cli -f map_name --occ 0.65 --free 0.15 --ros-args -p save_map_timeout:=20.0
     ```
 
-3. Set the environment variable to `map_name` in the terminal where the navigation node will be run
+3. Run the navigation launch file
 
     ```bash
-    export ROBOT_ENV=map_name
+    ros2 launch eddie_navigation eddie_nav_bringup.launch.py map_name:=<map_name>.yaml
     ```
 
-4. Run the navigation launch file
+    - The maps are available in [maps](maps) directory
 
-    ```bash
-    ros2 launch eddie_navigation eddie_nav_bringup.launch.py
-    ```
-
-5. The topic `/goal_pose` of `geometry_msgs/msg/PoseStamped` type is available to get goal pose
+4. The topic `/goal_pose` of `geometry_msgs/msg/PoseStamped` type is available to get goal pose

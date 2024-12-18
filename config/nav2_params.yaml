@@ -122,6 +122,7 @@ controller_server:
       limit_vel_cmd_in_traj: False
       stateful: True
       critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
+      BaseObstacle.scale: 0.02
       PathAlign.scale: 32.0
       GoalAlign.scale: 24.0
       PathAlign.forward_point_distance: 0.1
