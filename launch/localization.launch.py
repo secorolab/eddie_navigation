@@ -4,8 +4,9 @@ from simple_launch import SimpleLauncher
 def generate_launch_description():
     sl = SimpleLauncher()
     sl.declare_arg("use_sim_time", "True")
+    sl.declare_arg("params_file", "nav2_params.yaml")
 
-    nav2_yaml = sl.find("eddie_navigation", "nav2_params.yaml", "config")
+    nav2_yaml = sl.find("eddie_navigation", sl.arg("params_file"), "config")
 
     sl.node(
         package="nav2_amcl",
