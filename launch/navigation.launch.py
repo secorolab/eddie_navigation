@@ -209,7 +209,13 @@ def generate_launch_description():
                 respawn=use_respawn,
                 respawn_delay=2.0,
                 parameters=[configured_params],
-                arguments=["--ros-args", "--log-level", log_level],
+                arguments=[
+                    "--ros-args",
+                    "--log-level",
+                    log_level,
+                    "--log-level",
+                    "collision_monitor:=warn",
+                ],
                 remappings=remappings,
             ),
             Node(

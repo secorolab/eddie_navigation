@@ -9,7 +9,7 @@ def generate_launch_description():
     # Get the launch directory
     eddie_nav_dir = get_package_share_directory("eddie_navigation")
 
-    sl = SimpleLauncher(use_sim_time=True)
+    sl = SimpleLauncher(use_sim_time='auto')
 
     sl.declare_arg("use_sim_time", "true")
     sl.declare_arg("simulation", "true")
@@ -43,6 +43,7 @@ def generate_launch_description():
         ],
     )
 
+    '''
     sl.node(
         package="tf2_ros",
         executable="static_transform_publisher",
@@ -51,7 +52,7 @@ def generate_launch_description():
         parameters=[{"use_sim_time": sl.arg("use_sim_time")}],
         arguments=["0", "0", "0", "0", "0", "0", "map", "odom"],
     )
-    
+    '''
 
     with sl.group(if_arg="simulation"):
 
@@ -87,7 +88,7 @@ def generate_launch_description():
                 "use_sim_time": sl.arg("use_sim_time"),
                 "params_file": "nav2_params_real.yaml"},
         )
-
+        
         sl.include(
             "eddie_navigation",
             "navigation.launch.py",
@@ -95,5 +96,6 @@ def generate_launch_description():
                 "use_sim_time": sl.arg("use_sim_time"),
                 "params_file": os.path.join(eddie_nav_dir, "config", "nav2_params_real.yaml")},
         )
+        
 
     return sl.launch_description()
