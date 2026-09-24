@@ -21,7 +21,7 @@ slam_toolbox:
     transform_publish_period: 0.02 # (default: 0.05) How long (in seconds) between transform publications. To disable broadcasting transforms, set to 0.
     map_update_interval: 1.0 # (default: 5.0) Time interval (in seconds) between map updates.
     resolution: 0.05 # (default: 0.05) Resolution of the map (in metres per occupancy grid block)
-    max_laser_range: 9.0 # Maximum range for laser scans in meters, used for rastering images.
+    max_laser_range: 10.0 # Maximum range for laser scans in meters, used for rastering images.
     minimum_time_interval: 0.5 # Minimum time interval between scans to be used for loop closure.
     transform_timeout: 0.2 # Time to wait for a transform to become available when updating the map.
     tf_buffer_duration: 30.0 # Time that tf messages are kept in the buffer.

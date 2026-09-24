@@ -16,6 +16,17 @@
   <depend>nav2_bringup</depend>
   <depend>slam_toolbox</depend>
 
+  <exec_depend>eddie_base</exec_depend>
+  <exec_depend>eddie_description</exec_depend>
+  <exec_depend>joy</exec_depend>
+  <exec_depend>teleop_twist_joy</exec_depend>
+  <exec_depend>urg_node2</exec_depend>
+  <exec_depend>dual_laser_merger</exec_depend>
+  <exec_depend>rclcpp_components</exec_depend>
+  <exec_depend>joint_state_publisher</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>rviz2</exec_depend>
+
   <export>
     <build_type>ament_cmake</build_type>
   </export>
