@@ -81,3 +81,44 @@ source install/setup.bash
     - The maps are available in [maps](maps) directory
 
 4. The topic `/goal_pose` of `geometry_msgs/msg/PoseStamped` type is available to get goal pose
+
+## Real robot
+
+`eddie_bringup_base.launch.py` starts the base driver from
+[eddie_driver_ros](../eddie_driver_ros) (`force_mode`, `impedance_mode` pass through), the two
+Hokuyos (urg_node2), the laser merger, the joystick and nav2 with `nav2_params_real.yaml`:
+
+```bash
+ros2 launch eddie_navigation eddie_bringup_base.launch.py map_name:=<map_name>.yaml
+```
+
+## MuJoCo simulation
+
+`eddie_sim_nav.launch.py` runs the same stack against the MuJoCo sim: eddie_driver_node with
+`io:=mujoco` in `worlds/nav_test.xml` (an 8 x 6 m room, robot at the origin), its simulated
+`scan_1st`/`scan_2nd`, the laser merger and nav2 with `nav2_params_real.yaml` on
+`maps/nav_test.yaml`. Build eddie_driver and eddie_driver_ros with `EDDIE_SIM` (see their
+READMEs).
+
+```bash
+ros2 launch eddie_navigation eddie_sim_nav.launch.py                 # headless
+ros2 launch eddie_navigation eddie_sim_nav.launch.py viewer:=true enable_rviz:=true
+```
+
+`world:=secoro` runs in the SeCoRo lab from bim-experiments (`worlds/secoro.xml`: its IFC mesh
+for show, `worlds/secoro_walls.xml` for collision). `sim_record:=<file.mp4>` records the torso
+camera there and a top view to `<file>_top.mp4`. `nav_waypoints.py` drives the world's preset
+waypoints (or `--goal X Y YAW`, repeated) and shows them on `/nav_goals`:
+
+```bash
+ros2 run eddie_navigation nav_waypoints.py --world secoro
+```
+
+The map is the world sliced at the lidars' height; regenerate it after editing the world, and
+the collision boxes after changing the mesh (needs the `mujoco` Python package):
+
+```bash
+python3 scripts/world_to_map.py worlds/nav_test.xml maps/nav_test
+python3 scripts/mesh_to_walls.py worlds/meshes/uni-bremen_secoro.stl worlds/secoro_walls.xml
+python3 scripts/world_to_map.py worlds/secoro.xml maps/secoro
+```

@@ -1,0 +1,14 @@
+<!-- bim-experiments secorolab mesh, shown only (MuJoCo would collide its convex hull), in group 1
+     so the node's top view can hide it; secoro_walls.xml collides, from scripts/mesh_to_walls.py -->
+<mujoco model="secoro">
+  <asset>
+    <mesh name="secoro" file="meshes/uni-bremen_secoro.stl"/>
+    <material name="wall" rgba="0.85 0.85 0.8 1"/>
+  </asset>
+  <worldbody>
+    <body name="secoro" pos="-0.78 -1.5 0">
+      <geom type="mesh" mesh="secoro" material="wall" group="1" contype="0" conaffinity="0"/>
+      <include file="secoro_walls.xml"/>
+    </body>
+  </worldbody>
+</mujoco>

@@ -29,6 +29,9 @@ def generate_launch_description():
     force_mode_arg = DeclareLaunchArgument(
         'force_mode', default_value='false'
     )
+    impedance_mode_arg = DeclareLaunchArgument(
+        'impedance_mode', default_value='false'
+    )
     enable_rviz_arg = DeclareLaunchArgument(
         'enable_rviz', default_value='false'
     )
@@ -82,13 +85,14 @@ def generate_launch_description():
         condition=conditions.IfCondition(LaunchConfiguration("enable_rviz"))
     )
 
-    print('[INFO] [launch] loading eddie_base driver')
+    print('[INFO] [launch] loading eddie_driver_ros driver')
     eddie_driver = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
-            get_package_share_directory('eddie_base'), 'launch'),
-            '/eddie_base.launch.py']),
+            get_package_share_directory('eddie_driver_ros'), 'launch'),
+            '/eddie_driver.launch.py']),
         launch_arguments={
-            "force_mode": LaunchConfiguration("force_mode")
+            "force_mode": LaunchConfiguration("force_mode"),
+            "impedance_mode": LaunchConfiguration("impedance_mode"),
         }.items()
     )
 
@@ -154,6 +158,7 @@ def generate_launch_description():
     ld.add_action(enable_nav2_arg)
     ld.add_action(map_arg)
     ld.add_action(force_mode_arg)
+    ld.add_action(impedance_mode_arg)
     ld.add_action(enable_rviz_arg)
     ld.add_action(eddie_driver)
     ld.add_action(joy)
