@@ -61,7 +61,13 @@ def generate_launch_description():
     remappings = [("/tf", "tf"), ("/tf_static", "tf_static")]
 
     # Create our own temporary YAML files that include substitutions
-    param_substitutions = {"use_sim_time": use_sim_time, "autostart": autostart}
+    param_substitutions = {
+        "use_sim_time": use_sim_time,
+        "autostart": autostart,
+        "default_nav_to_pose_bt_xml": os.path.join(
+            eddie_nav_dir, "behavior_trees", "navigate_to_pose_zones.xml"),
+        "zones_file": LaunchConfiguration("zones_file"),
+    }
 
     configured_params = ParameterFile(
         RewrittenYaml(
@@ -119,6 +125,11 @@ def generate_launch_description():
 
     declare_log_level_cmd = DeclareLaunchArgument(
         "log_level", default_value="info", description="log level"
+    )
+
+    declare_zones_file_cmd = DeclareLaunchArgument(
+        "zones_file", default_value="",
+        description="maps/<world>_zones.yaml for the BT's ZoneOnPath; empty: no zones",
     )
 
     load_nodes = GroupAction(
@@ -219,6 +230,17 @@ def generate_launch_description():
                 remappings=remappings,
             ),
             Node(
+                package="eddie_navigation",
+                executable="constrained_pass_node",
+                name="constrained_pass",
+                output="screen",
+                respawn=use_respawn,
+                respawn_delay=2.0,
+                parameters=[configured_params],
+                arguments=["--ros-args", "--log-level", log_level],
+                remappings=remappings,
+            ),
+            Node(
                 package="nav2_lifecycle_manager",
                 executable="lifecycle_manager",
                 name="lifecycle_manager_navigation",
@@ -297,6 +319,13 @@ def generate_launch_description():
                         remappings=remappings,
                     ),
                     ComposableNode(
+                        package="eddie_navigation",
+                        plugin="eddie_navigation::ConstrainedPass",
+                        name="constrained_pass",
+                        parameters=[configured_params],
+                        remappings=remappings,
+                    ),
+                    ComposableNode(
                         package="nav2_lifecycle_manager",
                         plugin="nav2_lifecycle_manager::LifecycleManager",
                         name="lifecycle_manager_navigation",
@@ -328,6 +357,7 @@ def generate_launch_description():
     ld.add_action(declare_container_name_cmd)
     ld.add_action(declare_use_respawn_cmd)
     ld.add_action(declare_log_level_cmd)
+    ld.add_action(declare_zones_file_cmd)
     # Add the actions to launch all of the navigation nodes
     ld.add_action(load_nodes)
     ld.add_action(load_composable_nodes)

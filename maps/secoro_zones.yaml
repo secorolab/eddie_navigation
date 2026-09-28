@@ -1,0 +1,57 @@
+zones:
+- name: opening-1047
+  type: door
+  centre: [0.97, 0.776]
+  normal: [1.0, 0.0]
+  width: 0.8
+  constraints: {heading_mode: forward, max_speed: 0.1, align_tolerance_xy: 0.01, align_tolerance_yaw: 0.01,
+    stop_distance: 0.1}
+- name: opening-1111
+  type: door
+  centre: [0.97, 4.253]
+  normal: [1.0, 0.0]
+  width: 0.8
+  constraints: {heading_mode: forward, max_speed: 0.1, align_tolerance_xy: 0.01, align_tolerance_yaw: 0.01,
+    stop_distance: 0.1}
+- name: opening-1160
+  type: door
+  centre: [0.97, 7.117]
+  normal: [1.0, 0.0]
+  width: 0.8
+  constraints: {heading_mode: forward, max_speed: 0.1, align_tolerance_xy: 0.01, align_tolerance_yaw: 0.01,
+    stop_distance: 0.1}
+- name: opening-1209
+  type: door
+  centre: [0.97, 9.838]
+  normal: [1.0, 0.0]
+  width: 0.8
+  constraints: {heading_mode: forward, max_speed: 0.1, align_tolerance_xy: 0.01, align_tolerance_yaw: 0.01,
+    stop_distance: 0.1}
+- name: opening-1258
+  type: door
+  centre: [-0.83, 0.701]
+  normal: [1.0, 0.0]
+  width: 0.8
+  constraints: {heading_mode: forward, max_speed: 0.1, align_tolerance_xy: 0.01, align_tolerance_yaw: 0.01,
+    stop_distance: 0.1}
+- name: opening-1307
+  type: door
+  centre: [-0.83, 6.608]
+  normal: [1.0, 0.0]
+  width: 0.8
+  constraints: {heading_mode: forward, max_speed: 0.1, align_tolerance_xy: 0.01, align_tolerance_yaw: 0.01,
+    stop_distance: 0.1}
+- name: opening-1356
+  type: door
+  centre: [-0.83, 9.955]
+  normal: [1.0, 0.0]
+  width: 0.8
+  constraints: {heading_mode: forward, max_speed: 0.1, align_tolerance_xy: 0.01, align_tolerance_yaw: 0.01,
+    stop_distance: 0.1}
+- name: opening-1627
+  type: door
+  centre: [0.047, -1.45]
+  normal: [0.0, 1.0]
+  width: 0.8
+  constraints: {heading_mode: forward, max_speed: 0.1, align_tolerance_xy: 0.01, align_tolerance_yaw: 0.01,
+    stop_distance: 0.1}

@@ -16,12 +16,15 @@ PRESETS = {
     'nav_test': [('straight', -1.0, 0.0, math.pi),
                  ('around box', 2.5, 0.0, 0.0),
                  ('doorway', 5.0, -1.5, math.pi / 2)],
-    # off the corridor through three of the lab's 0.85 m doorways, then back
+    # off the corridor through three of the lab's 0.8 m doorways, then back
     'secoro': [('right room', 3.5, 3.8, 0.0),
                ('left room', -3.5, 2.0, math.pi),
                ('top-left room', -3.0, 9.8, math.pi),
-               ('back', 0.0, 0.0, -math.pi / 2)],
+               ('back', 0.0, 0.0, math.pi / 2)],
 }
+
+# the sim's spawn pose, as eddie_sim_nav.launch.py passes it to the driver
+START = {'nav_test': (0.0, 0.0, 0.0), 'secoro': (0.0, 0.0, math.pi / 2)}
 
 PENDING = (0.2, 0.6, 1.0)
 ACTIVE = (1.0, 0.8, 0.1)
@@ -78,6 +81,7 @@ def main():
     pub = nav.create_publisher(MarkerArray, '/nav_goals', latched)
     colours = [PENDING] * len(goals)
     pub.publish(markers(nav, goals, colours))
+    nav.setInitialPose(pose(nav, *START[args.world]))
     nav.waitUntilNav2Active()
 
     for i, (name, x, y, yaw) in enumerate(goals):

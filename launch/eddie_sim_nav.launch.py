@@ -7,7 +7,7 @@ from launch import LaunchDescription, conditions
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import (Command, FindExecutable, LaunchConfiguration,
-                                  PathJoinSubstitution)
+                                  PathJoinSubstitution, PythonExpression)
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 
@@ -21,6 +21,10 @@ def generate_launch_description():
                 get_package_share_directory(package), 'launch', launch_file)),
             launch_arguments=arguments.items(), **kwargs)
 
+    # the base spawns at the map origin with this heading, and amcl starts from the same pose
+    start_yaw = PythonExpression(
+        ["{'nav_test': '0.0', 'secoro': '1.5708'}['", LaunchConfiguration('world'), "']"])
+
     # The driver runs on a wall timer in real time, so nothing here uses sim time.
     eddie_driver = include('eddie_driver_ros', 'eddie_driver.launch.py', {
         'io': 'mujoco',
@@ -30,6 +34,7 @@ def generate_launch_description():
         'sim_world': PathJoinSubstitution(
             [nav_dir, 'worlds', [LaunchConfiguration('world'), '.xml']]),
         'sim_record': LaunchConfiguration('sim_record'),
+        'sim_start_pose': ['0 0 ', start_yaw],
     })
 
     # base only, as the sim; eddie_robot.urdf.xacro fails against the apt kortex_description
@@ -70,6 +75,10 @@ def generate_launch_description():
         'use_sim_time': 'false',
         'simulation': 'false',
         'map_name': [LaunchConfiguration('world'), '.yaml'],
+        'initial_yaw': start_yaw,
+        'zones_file': PythonExpression(
+            ["{'nav_test': '', 'secoro': '", os.path.join(nav_dir, 'maps', 'secoro_zones.yaml'),
+             "'}['", LaunchConfiguration('world'), "']"]),
     })
 
     rviz = Node(

@@ -11,7 +11,18 @@
   <license>TODO</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>rosidl_default_generators</buildtool_depend>
 
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>rclcpp</depend>
+  <depend>rclcpp_action</depend>
+  <depend>tf2</depend>
+  <depend>tf2_geometry_msgs</depend>
+  <depend>nav2_costmap_2d</depend>
+  <depend>nav2_behavior_tree</depend>
+  <depend>behaviortree_cpp</depend>
+  <depend>yaml_cpp_vendor</depend>
   <depend>navigation2</depend>
   <depend>nav2_bringup</depend>
   <depend>slam_toolbox</depend>
@@ -22,12 +33,15 @@
   <exec_depend>teleop_twist_joy</exec_depend>
   <exec_depend>urg_node2</exec_depend>
   <exec_depend>dual_laser_merger</exec_depend>
-  <exec_depend>rclcpp_components</exec_depend>
+  <depend>rclcpp_components</depend>
+  <exec_depend>rosidl_default_runtime</exec_depend>
   <exec_depend>joint_state_publisher</exec_depend>
   <exec_depend>tf2_ros</exec_depend>
   <exec_depend>rviz2</exec_depend>
   <exec_depend>nav2_simple_commander</exec_depend>
   <exec_depend>visualization_msgs</exec_depend>
+
+  <member_of_group>rosidl_interface_packages</member_of_group>
 
   <export>
     <build_type>ament_cmake</build_type>

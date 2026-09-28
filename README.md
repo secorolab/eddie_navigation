@@ -105,8 +105,8 @@ ros2 launch eddie_navigation eddie_sim_nav.launch.py                 # headless
 ros2 launch eddie_navigation eddie_sim_nav.launch.py viewer:=true enable_rviz:=true
 ```
 
-`world:=secoro` runs in the SeCoRo lab from bim-experiments (`worlds/secoro.xml`: its IFC mesh
-for show, `worlds/secoro_walls.xml` for collision). `sim_record:=<file.mp4>` records the torso
+`world:=secoro` runs in the SeCoRo lab from bim-experiments (`worlds/secoro.xml`: its mesh, seen
+by the viewer and the lidars; the robot does not collide with it). `sim_record:=<file.mp4>` records the torso
 camera there and a top view to `<file>_top.mp4`. `nav_waypoints.py` drives the world's preset
 waypoints (or `--goal X Y YAW`, repeated) and shows them on `/nav_goals`:
 
@@ -114,11 +114,22 @@ waypoints (or `--goal X Y YAW`, repeated) and shows them on `/nav_goals`:
 ros2 run eddie_navigation nav_waypoints.py --world secoro
 ```
 
-The map is the world sliced at the lidars' height; regenerate it after editing the world, and
-the collision boxes after changing the mesh (needs the `mujoco` Python package):
+The secoro mesh and map are bim-experiments' `gen/3d-mesh/uni-bremen_secoro.stl` and
+`gen/maps/uni-bremen_secoro.pgm`, copied; the map's origin is shifted by the body pos in
+`worlds/secoro.xml`. The nav_test map is the world sliced at the lidars' height; regenerate it
+after editing the world (needs the `mujoco` Python package):
 
 ```bash
 python3 scripts/world_to_map.py worlds/nav_test.xml maps/nav_test
-python3 scripts/mesh_to_walls.py worlds/meshes/uni-bremen_secoro.stl worlds/secoro_walls.xml
-python3 scripts/world_to_map.py worlds/secoro.xml maps/secoro
+```
+
+Doorways are zones (`maps/<world>_zones.yaml`, each with its motion constraints). nav2's BT
+(`behavior_trees/navigate_to_pose_zones.xml`) finds the first zone on the path (`ZoneOnPath`),
+drives in front of it and hands it to the `constrained_pass` server, which aligns on the gap the
+lidars see and drives straight through; then it replans to the goal. Regenerate the zones from
+the bim-experiments FPM model with the workspace venv:
+
+```bash
+../../.venv/bin/python scripts/zones_from_fpm.py \
+  ../bim-experiments/environments/secorolab/gen/json-ld/fpm worlds/secoro.xml maps/secoro_zones.yaml
 ```

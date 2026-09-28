@@ -1,0 +1,19 @@
+# Pass a zone straight through on the lidar-seen gap, from `approach` before to past it (map frame).
+string name
+geometry_msgs/Point centre
+geometry_msgs/Vector3 direction  # unit, the way through
+float64 width                    # [m] along the wall
+float64 approach                 # [m]
+MotionConstraints constraints
+---
+uint16 NONE = 0
+uint16 NO_GAP = 1
+uint16 OBSTACLE = 2
+uint16 TIMEOUT = 3
+uint16 TF_ERROR = 4
+uint16 error_code
+string error_msg
+---
+string phase             # "align" or "pass"
+float64 lateral_error    # [m]
+float64 heading_error    # [rad]

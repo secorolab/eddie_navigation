@@ -14,6 +14,10 @@ def generate_launch_description():
     sl.declare_arg("use_sim_time", "true")
     sl.declare_arg("simulation", "true")
     sl.declare_arg("map_name", "map_trial_1.yaml")
+    sl.declare_arg("initial_x", "0.0")
+    sl.declare_arg("initial_y", "0.0")
+    sl.declare_arg("initial_yaw", "0.0")
+    sl.declare_arg("zones_file", "")
 
     sl.add_action(LogInfo(msg=["using map: ", sl.arg("map_name")]))
 
@@ -86,7 +90,10 @@ def generate_launch_description():
             "localization.launch.py",
             launch_arguments={
                 "use_sim_time": sl.arg("use_sim_time"),
-                "params_file": "nav2_params_real.yaml"},
+                "params_file": "nav2_params_real.yaml",
+                "initial_x": sl.arg("initial_x"),
+                "initial_y": sl.arg("initial_y"),
+                "initial_yaw": sl.arg("initial_yaw")},
         )
         
         sl.include(
@@ -94,7 +101,8 @@ def generate_launch_description():
             "navigation.launch.py",
             launch_arguments={
                 "use_sim_time": sl.arg("use_sim_time"),
-                "params_file": os.path.join(eddie_nav_dir, "config", "nav2_params_real.yaml")},
+                "params_file": os.path.join(eddie_nav_dir, "config", "nav2_params_real.yaml"),
+                "zones_file": sl.arg("zones_file")},
         )
         
 
