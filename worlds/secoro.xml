@@ -1,5 +1,6 @@
 <!-- bim-experiments secorolab mesh, shown only (MuJoCo would collide its convex hull), in group 1
-     so the node's top view can hide it; secoro_walls.xml collides, from scripts/mesh_to_walls.py -->
+     so the node's top view can hide it; secoro_walls.xml collides, from scripts/mesh_to_walls.py
+     (floor-standing walls in group 3, lintels in group 4, which the top view hides too) -->
 <mujoco model="secoro">
   <asset>
     <mesh name="secoro" file="meshes/uni-bremen_secoro.stl"/>

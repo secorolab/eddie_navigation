@@ -13,6 +13,9 @@ import numpy as np
 # skewed off the axes so the parity ray misses edges and vertices of axis-aligned faces
 RAY = np.array([1.0, 0.0123, 0.0071])
 WALL_RGBA = '0.85 0.85 0.8 1'
+# geom groups shared with worlds/*.xml (building mesh 1) and eddie_driver_node's top view
+WALL_GROUP = 3
+LINTEL_GROUP = 4
 
 
 def load(stl):
@@ -105,8 +108,8 @@ def main():
             hi = np.array([axes[0][i1], axes[1][j1], axes[2][k1]])
             pos = ' '.join(f'{x:.4f}' for x in (lo + hi) / 2)
             size = ' '.join(f'{x:.4f}' for x in (hi - lo) / 2)
-            # 4: off the floor (lintels), which the node's top view hides to show the doorways
-            group = 4 if lo[2] > 1e-3 else 3
+            # the top view hides lintels to show the doorways
+            group = LINTEL_GROUP if lo[2] > 1e-3 else WALL_GROUP
             geoms.append(f'  <geom type="box" pos="{pos}" size="{size}" group="{group}" '
                          f'rgba="{WALL_RGBA}"/>')
 
