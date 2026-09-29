@@ -22,7 +22,7 @@ From source, in the same workspace:
 | [eddie_description](https://github.com/secorolab/eddie_description) | URDF (laser frames) and the MuJoCo model |
 | [urg_node2](https://github.com/Hokuyo-aut/urg_node2) (clone with `--recursive`) | the two Hokuyo lidars |
 | [hddc2b](https://github.com/secorolab/hddc2b/tree/pst-vel-dist) (`pst-vel-dist`), [robif2b](https://github.com/secorolab/robif2b) | eddie_driver's solvers and EtherCAT; plain CMake, on `CMAKE_PREFIX_PATH` |
-| [mj_kdl_wrapper](https://github.com/vamsikalagaturu/mj_kdl_wrapper) (`feat/v0.4.0`) | the MuJoCo simulation only |
+| [mj_kdl_wrapper](https://github.com/vamsikalagaturu/mj_kdl_wrapper) (`v0.4.0`) | the MuJoCo simulation only |
 
 ## Build
 
@@ -82,8 +82,8 @@ ros2 launch eddie_navigation eddie_sim_nav.launch.py viewer:=true enable_rviz:=t
 ```
 
 `world:=secoro` runs in the SeCoRo lab from bim-experiments (`worlds/secoro.xml`: its mesh, seen
-by the viewer and the lidars; the robot does not collide with it). `sim_record:=<file.mp4>` records the torso
-camera there and a top view to `<file>_top.mp4`. `nav_waypoints.py` drives the world's preset
+by the viewer and the lidars; the robot does not collide with it). `sim_record:=<file.mp4>` records a top view
+there; `sim_record_cameras:="top <camera>"` adds cameras of the model, one mp4 each. `nav_waypoints.py` drives the world's preset
 waypoints (or `--goal X Y YAW`, repeated) and shows them on `/nav_goals`:
 
 ```bash

@@ -34,6 +34,7 @@ def generate_launch_description():
         'sim_world': PathJoinSubstitution(
             [nav_dir, 'worlds', [LaunchConfiguration('world'), '.xml']]),
         'sim_record': LaunchConfiguration('sim_record'),
+        'sim_record_cameras': LaunchConfiguration('sim_record_cameras'),
         'sim_start_pose': ['0 0 ', start_yaw],
     })
 
@@ -104,7 +105,10 @@ def generate_launch_description():
                               description='Impedance mode (a twist on /cmd_vel, torques out)'),
         DeclareLaunchArgument('enable_rviz', default_value='false'),
         DeclareLaunchArgument('sim_record', default_value='',
-                              description='Record the torso camera to this mp4'),
+                              description='Record sim_record_cameras to this mp4'),
+        DeclareLaunchArgument('sim_record_cameras', default_value='top',
+                              description='Cameras to record, space-separated (see '
+                                          'eddie_driver_ros)'),
         eddie_driver,
         robot_state_publisher,
         joint_state_publisher,
