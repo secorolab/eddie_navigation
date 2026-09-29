@@ -40,7 +40,7 @@ rclcpp_components_register_node(constrained_pass
 add_library(eddie_zone_bt_nodes SHARED src/zone_bt_nodes.cpp)
 target_link_libraries(eddie_zone_bt_nodes "${cpp_typesupport_target}" yaml-cpp)
 ament_target_dependencies(eddie_zone_bt_nodes
-  geometry_msgs nav_msgs rclcpp nav2_behavior_tree behaviortree_cpp)
+  geometry_msgs nav_msgs rclcpp tf2 tf2_ros tf2_geometry_msgs nav2_behavior_tree behaviortree_cpp)
 target_compile_definitions(eddie_zone_bt_nodes PRIVATE BT_PLUGIN_EXPORT)
 
 install(TARGETS constrained_pass eddie_zone_bt_nodes

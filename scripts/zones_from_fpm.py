@@ -13,8 +13,8 @@ import yaml
 from fpm.graph import build_graph_from_directory, get_3d_structure
 
 # eddie_navigation/msg/MotionConstraints, by name
-DOOR_CONSTRAINTS = {'heading_mode': 'forward', 'max_speed': 0.1, 'align_tolerance_xy': 0.01,
-                    'align_tolerance_yaw': 0.01, 'stop_distance': 0.1}
+DOOR_CONSTRAINTS = {'heading_mode': 'along', 'max_speed': 0.1, 'align_tolerance_xy': 0.01,
+                    'align_tolerance_yaw': 0.02, 'stop_time': 1.0}
 
 
 def main():

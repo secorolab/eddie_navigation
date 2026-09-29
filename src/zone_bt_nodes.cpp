@@ -6,6 +6,9 @@
 #include <nav2_behavior_tree/bt_action_node.hpp>
 #include <nav_msgs/msg/path.hpp>
 #include <rclcpp/rclcpp.hpp>
+#include <tf2/utils.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
+#include <tf2_ros/buffer.h>
 #include <yaml-cpp/yaml.h>
 
 #include <cmath>
@@ -30,6 +33,8 @@ public:
         }
         const std::string file = node->get_parameter("zones_file").as_string();
         if (!file.empty()) load(file);
+        robot_frame_ = node->get_parameter("robot_base_frame").as_string();
+        tf_ = config().blackboard->get<std::shared_ptr<tf2_ros::Buffer>>("tf_buffer");
         RCLCPP_INFO(node->get_logger(), "ZoneOnPath: %zu zones from '%s'", zones_.size(),
                 file.c_str());
     }
@@ -41,6 +46,7 @@ public:
             BT::InputPort<double>("approach", 0.6, "[m] zone centre to where the pass starts"),
             BT::OutputPort<ConstrainedPassGoal>("zone"),
             BT::OutputPort<geometry_msgs::msg::PoseStamped>("approach_pose"),
+            BT::OutputPort<bool>("near", "within `approach` of approach_pose: no drive needed"),
         };
     }
 
@@ -70,11 +76,22 @@ public:
                 before.header = path.header;
                 before.pose.position.x = z.goal.centre.x - goal.direction.x * approach;
                 before.pose.position.y = z.goal.centre.y - goal.direction.y * approach;
-                const double yaw = std::atan2(goal.direction.y, goal.direction.x);
+                // keep the heading the robot has: ConstrainedPass turns it on the spot, cleanly
+                double yaw = std::atan2(goal.direction.y, goal.direction.x);
+                bool near = false;
+                try {
+                    const auto robot = tf_->lookupTransform(path.header.frame_id, robot_frame_,
+                            tf2::TimePointZero).transform;
+                    yaw = tf2::getYaw(robot.rotation);
+                    near = std::hypot(robot.translation.x - before.pose.position.x,
+                                   robot.translation.y - before.pose.position.y) < approach;
+                } catch (const tf2::TransformException &) {
+                }
                 before.pose.orientation.z = std::sin(yaw / 2);
                 before.pose.orientation.w = std::cos(yaw / 2);
                 setOutput("zone", goal);
                 setOutput("approach_pose", before);
+                setOutput("near", near);
                 return BT::NodeStatus::SUCCESS;
             }
         }
@@ -100,18 +117,21 @@ private:
             zone.ny = z["normal"][1].as<double>();
             const auto c = z["constraints"];
             auto &mc = zone.goal.constraints;
-            mc.heading_mode = c["heading_mode"].as<std::string>() == "forward"
-                    ? msg::MotionConstraints::HEADING_FORWARD
-                    : msg::MotionConstraints::HEADING_ANY;
+            const std::string heading = c["heading_mode"].as<std::string>();
+            mc.heading_mode = heading == "forward" ? msg::MotionConstraints::HEADING_FORWARD
+                    : heading == "along"           ? msg::MotionConstraints::HEADING_ALONG
+                                                   : msg::MotionConstraints::HEADING_ANY;
             mc.max_speed = c["max_speed"].as<double>();
             mc.align_tolerance_xy = c["align_tolerance_xy"].as<double>();
             mc.align_tolerance_yaw = c["align_tolerance_yaw"].as<double>();
-            mc.stop_distance = c["stop_distance"].as<double>();
+            mc.stop_time = c["stop_time"].as<double>();
             zones_.push_back(zone);
         }
     }
 
     std::vector<Zone> zones_;
+    std::string robot_frame_;
+    std::shared_ptr<tf2_ros::Buffer> tf_;
 };
 
 class ConstrainedPassAction : public nav2_behavior_tree::BtActionNode<action::ConstrainedPass>

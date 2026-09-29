@@ -9,8 +9,9 @@
           <KeepRunningUntilFailure>
             <Sequence name="PassNextZone">
               <ComputePathToPose goal="{goal}" path="{path}" planner_id="{selected_planner}" error_code_id="{compute_path_error_code}"/>
-              <ZoneOnPath path="{path}" zone="{zone}" approach_pose="{approach_pose}"/>
-              <PipelineSequence name="DriveToZone">
+              <ZoneOnPath path="{path}" zone="{zone}" approach_pose="{approach_pose}" near="{zone_near}"/>
+              <!-- close to the door already: ConstrainedPass aligns from here, nav2 would not fit -->
+              <PipelineSequence name="DriveToZone" _skipIf="zone_near">
                 <RateController hz="1.0">
                   <ComputePathToPose goal="{approach_pose}" path="{zone_path}" planner_id="{selected_planner}" error_code_id="{compute_path_error_code}"/>
                 </RateController>

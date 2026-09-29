@@ -79,12 +79,15 @@ constrained_pass:
     global_frame: map
     costmap_topic: local_costmap/costmap
     cmd_vel_topic: cmd_vel_nav
-    footprint: "[ [0.33, 0.35], [0.33, -0.35], [-0.33, -0.35], [-0.33, 0.35] ]"
+    # the real base (MJCF 0.62 x 0.66 m), not nav2's padded footprint: doors clear ~0.72 m
+    check_footprint: "[ [0.31, 0.33], [0.31, -0.33], [-0.31, -0.33], [-0.31, 0.33] ]"
     rate: 20.0
     k_pos: 1.0
     k_yaw: 1.5
     correction_speed_max: 0.1
-    correction_turn_max: 0.3
+    correction_turn_max: 0.6
+    turn_speed_min: 0.15
+    align_speed_min: 0.03
     timeout: 60.0
 controller_server:
   ros__parameters:
@@ -109,9 +112,17 @@ controller_server:
       plugin: "nav2_controller::SimpleGoalChecker"
       xy_goal_tolerance: 0.25
       yaw_goal_tolerance: 0.25
-    # nav2_bringup's Jazzy MPPI defaults, with the Omni model and the base's limits
+    # shim: one smooth on-the-spot turn to the goal heading; MPPI (Jazzy defaults, Omni) drives
     FollowPath:
-      plugin: "nav2_mppi_controller::MPPIController"
+      plugin: "nav2_rotation_shim_controller::RotationShimController"
+      primary_controller: "nav2_mppi_controller::MPPIController"
+      # above pi: never turns to face the path first (omni drives in any direction)
+      angular_dist_threshold: 3.2
+      rotate_to_goal_heading: true
+      rotate_to_heading_angular_vel: 0.6
+      max_angular_accel: 1.0
+      closed_loop: true
+      simulate_ahead_time: 1.0
       time_steps: 32
       model_dt: 0.05
       batch_size: 1000

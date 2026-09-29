@@ -5,8 +5,18 @@ from launch import LaunchDescription, conditions
 from launch_ros.actions import Node
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from ament_index_python.packages import get_package_share_directory
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import Command, FindExecutable, LaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch_ros.parameter_descriptions import ParameterValue
+from launch.actions import OpaqueFunction
+
+
+def zones_for_map(context):
+    """maps/<map>_zones.yaml when the map has doors (secoro), else no zones."""
+    stem = os.path.splitext(LaunchConfiguration('map_name').perform(context))[0]
+    zones = os.path.join(get_package_share_directory('eddie_navigation'), 'maps',
+                         f'{stem}_zones.yaml')
+    return os.path.exists(zones) and zones or ''
 
 
 def generate_launch_description():
@@ -82,6 +92,8 @@ def generate_launch_description():
         arguments=['-d', os.path.join(
             get_package_share_directory('eddie_navigation'), 'config', 'rviz', 'eddie_rviz.rviz')],
         parameters=[{"use_sim_time": False}],
+        # Ogre's GLX window fails under Wayland: run rviz on XWayland
+        additional_env={'QT_QPA_PLATFORM': 'xcb'},
         condition=conditions.IfCondition(LaunchConfiguration("enable_rviz"))
     )
 
@@ -113,11 +125,18 @@ def generate_launch_description():
         condition=conditions.IfCondition(LaunchConfiguration("enable_lidar"))
     )
     
-    eddie_description = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([os.path.join(
-            get_package_share_directory('eddie_description'), 'launch'),
-            '/load_eddie.launch.py']),
-        launch_arguments={"use_sim_time": "false"}.items()
+    # base only, as the sim; eddie_robot.urdf.xacro fails against the apt kortex/robotiq descriptions
+    urdf = ParameterValue(Command([
+        FindExecutable(name='xacro'), ' ',
+        os.path.join(get_package_share_directory('eddie_description'), 'urdf',
+                     'eddie_base.urdf.xacro'),
+        ' robot_prefix:=eddie_']), value_type=str)
+    eddie_description = Node(
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        name='robot_state_publisher',
+        output='screen',
+        parameters=[{'robot_description': urdf, 'use_sim_time': False}],
     )
 
     slam_map_generator = IncludeLaunchDescription(
@@ -137,7 +156,7 @@ def generate_launch_description():
         condition=conditions.IfCondition(LaunchConfiguration("enable_slam"))
     )
 
-    navigation = IncludeLaunchDescription(
+    navigation = OpaqueFunction(function=lambda context: [IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(
             get_package_share_directory("eddie_navigation"),
             "launch",
@@ -146,10 +165,11 @@ def generate_launch_description():
         launch_arguments={
             "use_sim_time": "false",
             "simulation": "false",
-            "map_name": LaunchConfiguration("map_name")
+            "map_name": LaunchConfiguration("map_name"),
+            "zones_file": zones_for_map(context),
         }.items(),
         condition=conditions.IfCondition(LaunchConfiguration("enable_nav2"))
-    )
+    )])
     
     ld = LaunchDescription()
     ld.add_action(enable_lidar_arg)

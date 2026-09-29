@@ -1,0 +1,23 @@
+# drawn by hand on secoro_slam.yaml (scripts/draw_zones.py), squared to the walls
+zones:
+- name: door-1
+  type: door
+  centre: [-1.003, -0.005]
+  normal: [-0.9999, -0.0116]
+  width: 0.83
+  constraints: {heading_mode: along, max_speed: 0.1, align_tolerance_xy: 0.01, align_tolerance_yaw: 0.02,
+    stop_time: 1.0}
+- name: door-2
+  type: door
+  centre: [-2.681, -0.054]
+  normal: [-0.9999, -0.0116]
+  width: 0.809
+  constraints: {heading_mode: along, max_speed: 0.1, align_tolerance_xy: 0.01, align_tolerance_yaw: 0.02,
+    stop_time: 1.0}
+- name: door-3
+  type: door
+  centre: [-0.885, -7.455]
+  normal: [-0.9999, -0.0116]
+  width: 0.849
+  constraints: {heading_mode: along, max_speed: 0.1, align_tolerance_xy: 0.01, align_tolerance_yaw: 0.02,
+    stop_time: 1.0}
