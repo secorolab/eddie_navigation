@@ -85,12 +85,46 @@ source install/setup.bash
 ## Real robot
 
 `eddie_bringup_base.launch.py` starts the base driver from
-[eddie_driver_ros](../eddie_driver_ros) (`force_mode`, `impedance_mode` pass through), the two
-Hokuyos (urg_node2), the laser merger, the joystick and nav2 with `nav2_params_real.yaml`:
+[eddie_driver_ros](https://github.com/secorolab/eddie_driver_ros) (`force_mode`,
+`impedance_mode` pass through), the base-only URDF (`eddie_base.urdf.xacro`: the full robot's
+arm descriptions do not match the apt kortex/robotiq packages), the two Hokuyos
+([urg_node2](https://github.com/Hokuyo-aut/urg_node2), from source), the laser merger, the
+joystick and nav2 with `nav2_params_real.yaml`. The EtherCAT interface is `ethernet_interface`
+in eddie_driver's `eddie.yaml`, the lidar addresses are in `config/params_ether*.yaml`, and the
+driver's one-time sudoers setup is in its README.
 
 ```bash
-ros2 launch eddie_navigation eddie_bringup_base.launch.py map_name:=<map_name>.yaml
+ros2 launch eddie_navigation eddie_bringup_base.launch.py map_name:=secoro_slam.yaml enable_rviz:=true
 ```
+
+Depends on, besides nav2 and slam_toolbox: eddie_driver_ros and
+[eddie_driver](https://github.com/secorolab/eddie_driver),
+[eddie_description](https://github.com/secorolab/eddie_description), urg_node2 (source), and from
+apt `ros-jazzy-dual-laser-merger`, `ros-jazzy-joy`, `ros-jazzy-teleop-twist-joy`. The MuJoCo
+simulation below also needs eddie_driver(_ros) built with `EDDIE_SIM` and
+[mj_kdl_wrapper](https://github.com/vamsikalagaturu/mj_kdl_wrapper) (`feat/v0.4.0`).
+
+In RViz, set the robot's pose with *2D Pose Estimate*, then send goals with *2D Goal Pose*.
+Keep cables out of the lidar plane: the lidars see them as obstacles.
+
+### Mapping
+
+```bash
+ros2 launch eddie_navigation eddie_bringup_base.launch.py enable_slam:=true enable_nav2:=false enable_rviz:=true
+ros2 run nav2_map_server map_saver_cli -f src/eddie_navigation/maps/<name> --occ 0.65 --free 0.15 --ros-args -p save_map_timeout:=20.0
+```
+
+Drive with the joystick (hold RB) or `ros2 run eddie_driver_ros key_teleop.py --ros-args -r
+platform_vel:=/cmd_vel -p ramp:=0.0`, then rebuild so the launch finds the new map. Leave nav2
+off while mapping: its map_server would publish `/map` too.
+
+### nav2 setup
+
+- Footprint 0.66 x 0.70 m, no padding; 2.5 cm local costmap.
+- Controller: MPPI (Omni motion model, no preferred direction) inside a RotationShimController
+  that turns the robot to the goal heading on the spot, in one smooth rotation.
+- Planner: NavFn. It plans for a circle (the inscribed radius), which is why doors are passed by
+  the zone BT below rather than by nav2.
 
 ## MuJoCo simulation
 
@@ -123,13 +157,31 @@ after editing the world (needs the `mujoco` Python package):
 python3 scripts/world_to_map.py worlds/nav_test.xml maps/nav_test
 ```
 
-Doorways are zones (`maps/<world>_zones.yaml`, each with its motion constraints). nav2's BT
-(`behavior_trees/navigate_to_pose_zones.xml`) finds the first zone on the path (`ZoneOnPath`),
-drives in front of it and hands it to the `constrained_pass` server, which aligns on the gap the
-lidars see and drives straight through; then it replans to the goal. Regenerate the zones from
-the bim-experiments FPM model with the workspace venv:
+## Doors (zones)
+
+Doors are zones in `maps/<map>_zones.yaml`, one file per map; the robot and sim launches pick up
+the file that matches `map_name` / `world`. Each zone has a `name`, `centre`, `normal`, `width`
+and `constraints` (`eddie_navigation/msg/MotionConstraints`: `heading_mode` `along` / `forward`
+/ `any`, `max_speed`, `align_tolerance_xy` / `_yaw`, `stop_time`).
+
+nav2's BT (`behavior_trees/navigate_to_pose_zones.xml`) finds the first zone on the path
+(`ZoneOnPath`), drives in front of it (skipped when the robot is already there) and hands it
+to the `constrained_pass` server (`ConstrainedPass.action`). The server measures the gap the
+lidars see, turns on the spot to face through or back through (`along`), slides into line and
+drives straight through; it stops on anything inside the opening within `stop_time`, checked
+against the real base outline (`check_footprint`), the jambs being the door. Then nav2 replans
+to the goal.
+
+Three ways to make a zone file:
 
 ```bash
+# from the BIM (bim-experiments FPM model; the workspace venv has scenery_builder)
 ../../.venv/bin/python scripts/zones_from_fpm.py \
   ../bim-experiments/environments/secorolab/gen/json-ld/fpm worlds/secoro.xml maps/secoro_zones.yaml
+# by hand on a map: click both jambs of each door, Enter saves (doors squared to the walls)
+python3 scripts/draw_zones.py maps/secoro_slam.yaml maps/secoro_slam_zones.yaml
+# onto another map of the same building, by registering the two maps' walls
+python3 scripts/zones_to_map.py maps/secoro.yaml maps/secoro_zones.yaml maps/secoro_slam.yaml maps/secoro_slam_zones.yaml
 ```
+
+Rebuild eddie_navigation after changing a zone file.
