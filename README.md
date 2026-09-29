@@ -99,6 +99,16 @@ after editing the world (needs the `mujoco` Python package):
 python3 scripts/world_to_map.py worlds/nav_test.xml maps/nav_test
 ```
 
+To look at a floor-plan mesh on its own, `show_stl.py` builds an mj_kdl_wrapper scene around it
+(floor, skybox, the mesh visual only) and opens the viewer; it needs the `mj_kdl_wrapper` Python
+package:
+
+```bash
+python3 scripts/show_stl.py worlds/meshes/uni-bremen_secoro.stl
+```
+
+The mesh is static: doors in it cannot open.
+
 ## Doors (zones)
 
 Doors are zones in `maps/<map>_zones.yaml`, one file per map; the robot and sim launches pick up
