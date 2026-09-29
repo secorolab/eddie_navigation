@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Show a floor-plan mesh (.stl) in an mj_kdl_wrapper scene with the MuJoCo viewer.
+"""Show a floor-plan mesh (.stl) or an MJCF world (.xml) in an mj_kdl_wrapper scene.
 
-Usage: show_stl.py <mesh.stl>  (needs the mj_kdl_wrapper Python package)
+Usage: show_world.py <mesh.stl | world.xml>  (needs the mj_kdl_wrapper Python package)
 """
 
 import argparse
@@ -22,9 +22,12 @@ WORLD = """<mujoco>
 """
 
 
-def build(mesh, tmp):
-    world = pathlib.Path(tmp) / 'floorplan.xml'
-    world.write_text(WORLD.format(mesh=mesh.resolve()))
+def build(path, tmp):
+    if path.suffix.lower() == '.xml':
+        world = path.resolve()
+    else:
+        world = pathlib.Path(tmp) / 'floorplan.xml'
+        world.write_text(WORLD.format(mesh=path.resolve()))
     obj = mjk.SceneObject()
     obj.name = 'floorplan'
     obj.mjcf_path = str(world)
@@ -39,10 +42,10 @@ def build(mesh, tmp):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument('mesh', type=pathlib.Path)
+    parser.add_argument('path', type=pathlib.Path)
     args = parser.parse_args()
-    with tempfile.TemporaryDirectory() as tmp, build(args.mesh, tmp) as env:
-        env.open_viewer(args.mesh.name)
+    with tempfile.TemporaryDirectory() as tmp, build(args.path, tmp) as env:
+        env.open_viewer(args.path.name)
         while env.step():
             env.pace()
 

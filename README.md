@@ -99,12 +99,13 @@ after editing the world (needs the `mujoco` Python package):
 python3 scripts/world_to_map.py worlds/nav_test.xml maps/nav_test
 ```
 
-To look at a floor-plan mesh on its own, `show_stl.py` builds an mj_kdl_wrapper scene around it
-(floor, skybox, the mesh visual only) and opens the viewer; it needs the `mj_kdl_wrapper` Python
-package:
+To look at a floor-plan mesh or a world on its own, `show_world.py` builds an mj_kdl_wrapper scene
+around it (floor, skybox; a mesh is visual only) and opens the viewer; it needs the
+`mj_kdl_wrapper` Python package:
 
 ```bash
-python3 scripts/show_stl.py worlds/meshes/uni-bremen_secoro.stl
+python3 scripts/show_world.py worlds/meshes/uni-bremen_secoro.stl
+python3 scripts/show_world.py worlds/secoro.xml
 ```
 
 The mesh is static: doors in it cannot open.
