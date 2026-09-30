@@ -1,0 +1,116 @@
+<!-- worlds/secoro.xml plus a hinged, position-actuated panel with a lever handle in each of its
+     8 doorways (maps/secoro_zones.yaml); door_<id> ctrl opens 0..1.5708 rad, handle_<id> ctrl
+     presses 0..-0.785 rad -->
+<mujoco model="secoro_doors">
+  <asset>
+    <mesh name="secoro" file="meshes/uni-bremen_secoro.stl"/>
+    <material name="wall" rgba="0.85 0.85 0.8 1"/>
+    <material name="door" rgba="0.55 0.35 0.2 1"/>
+    <material name="handle" rgba="0.75 0.75 0.78 1" specular="0.8" shininess="0.8"/>
+  </asset>
+  <default>
+    <default class="door">
+      <joint type="hinge" axis="0 0 1" range="0 90" damping="5" armature="0.1"/>
+      <geom type="box" size="0.39 0.02 1" pos="0.395 0 1.005" mass="15" material="door"/>
+      <position kp="20" ctrlrange="0 1.5708"/>
+      <default class="handle">
+        <!-- the levers point to the hinge, so pressing down is a negative turn about y -->
+        <joint axis="0 1 0" range="-45 0" damping="0.05" armature="0.001"/>
+        <geom type="box" size="0.06 0.008 0.01" mass="0.2" material="handle" contype="0" conaffinity="0"/>
+        <position kp="1" ctrlrange="-0.785 0"/>
+        <default class="spindle">
+          <geom type="cylinder" size="0.008 0.06" pos="0 0 0" euler="90 0 0"/>
+        </default>
+        <default class="lever_front">
+          <geom pos="-0.05 -0.06 0"/>
+        </default>
+        <default class="lever_back">
+          <geom pos="-0.05 0.06 0"/>
+        </default>
+      </default>
+    </default>
+  </default>
+  <worldbody>
+    <!-- only the first root body is attached to a scene, so the doors hang below it -->
+    <body name="secoro_doors">
+      <body name="secoro" pos="-0.78 -1.5 0">
+        <geom type="mesh" mesh="secoro" material="wall" contype="0" conaffinity="0"/>
+      </body>
+      <!-- body frame at the hinge jamb, x along the opening; opening swings to -normal -->
+      <body name="door_1047" childclass="door" pos="0.97 0.376 0" euler="0 0 90">
+        <joint name="door_1047"/><geom/>
+        <body name="handle_1047" childclass="handle" pos="0.72 0 1.05">
+          <joint name="handle_1047"/>
+          <geom class="spindle"/><geom class="lever_front"/><geom class="lever_back"/>
+        </body>
+      </body>
+      <body name="door_1111" childclass="door" pos="0.97 3.853 0" euler="0 0 90">
+        <joint name="door_1111"/><geom/>
+        <body name="handle_1111" childclass="handle" pos="0.72 0 1.05">
+          <joint name="handle_1111"/>
+          <geom class="spindle"/><geom class="lever_front"/><geom class="lever_back"/>
+        </body>
+      </body>
+      <body name="door_1160" childclass="door" pos="0.97 6.717 0" euler="0 0 90">
+        <joint name="door_1160"/><geom/>
+        <body name="handle_1160" childclass="handle" pos="0.72 0 1.05">
+          <joint name="handle_1160"/>
+          <geom class="spindle"/><geom class="lever_front"/><geom class="lever_back"/>
+        </body>
+      </body>
+      <body name="door_1209" childclass="door" pos="0.97 9.438 0" euler="0 0 90">
+        <joint name="door_1209"/><geom/>
+        <body name="handle_1209" childclass="handle" pos="0.72 0 1.05">
+          <joint name="handle_1209"/>
+          <geom class="spindle"/><geom class="lever_front"/><geom class="lever_back"/>
+        </body>
+      </body>
+      <body name="door_1258" childclass="door" pos="-0.83 0.301 0" euler="0 0 90">
+        <joint name="door_1258"/><geom/>
+        <body name="handle_1258" childclass="handle" pos="0.72 0 1.05">
+          <joint name="handle_1258"/>
+          <geom class="spindle"/><geom class="lever_front"/><geom class="lever_back"/>
+        </body>
+      </body>
+      <body name="door_1307" childclass="door" pos="-0.83 6.208 0" euler="0 0 90">
+        <joint name="door_1307"/><geom/>
+        <body name="handle_1307" childclass="handle" pos="0.72 0 1.05">
+          <joint name="handle_1307"/>
+          <geom class="spindle"/><geom class="lever_front"/><geom class="lever_back"/>
+        </body>
+      </body>
+      <body name="door_1356" childclass="door" pos="-0.83 9.555 0" euler="0 0 90">
+        <joint name="door_1356"/><geom/>
+        <body name="handle_1356" childclass="handle" pos="0.72 0 1.05">
+          <joint name="handle_1356"/>
+          <geom class="spindle"/><geom class="lever_front"/><geom class="lever_back"/>
+        </body>
+      </body>
+      <body name="door_1627" childclass="door" pos="0.447 -1.45 0" euler="0 0 180">
+        <joint name="door_1627"/><geom/>
+        <body name="handle_1627" childclass="handle" pos="0.72 0 1.05">
+          <joint name="handle_1627"/>
+          <geom class="spindle"/><geom class="lever_front"/><geom class="lever_back"/>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  <actuator>
+    <position class="door" name="door_1047" joint="door_1047"/>
+    <position class="door" name="door_1111" joint="door_1111"/>
+    <position class="door" name="door_1160" joint="door_1160"/>
+    <position class="door" name="door_1209" joint="door_1209"/>
+    <position class="door" name="door_1258" joint="door_1258"/>
+    <position class="door" name="door_1307" joint="door_1307"/>
+    <position class="door" name="door_1356" joint="door_1356"/>
+    <position class="door" name="door_1627" joint="door_1627"/>
+    <position class="handle" name="handle_1047" joint="handle_1047"/>
+    <position class="handle" name="handle_1111" joint="handle_1111"/>
+    <position class="handle" name="handle_1160" joint="handle_1160"/>
+    <position class="handle" name="handle_1209" joint="handle_1209"/>
+    <position class="handle" name="handle_1258" joint="handle_1258"/>
+    <position class="handle" name="handle_1307" joint="handle_1307"/>
+    <position class="handle" name="handle_1356" joint="handle_1356"/>
+    <position class="handle" name="handle_1627" joint="handle_1627"/>
+  </actuator>
+</mujoco>
