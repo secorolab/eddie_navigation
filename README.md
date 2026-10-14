@@ -22,7 +22,7 @@ From source, in the same workspace:
 | [eddie_description](https://github.com/secorolab/eddie_description) | URDF (laser frames) and the MuJoCo model |
 | [urg_node2](https://github.com/Hokuyo-aut/urg_node2) (clone with `--recursive`) | the two Hokuyo lidars |
 | [hddc2b](https://github.com/secorolab/hddc2b/tree/pst-vel-dist) (`pst-vel-dist`), [robif2b](https://github.com/secorolab/robif2b) | eddie_driver's solvers and EtherCAT; plain CMake, on `CMAKE_PREFIX_PATH` |
-| [mj_kdl_wrapper](https://github.com/vamsikalagaturu/mj_kdl_wrapper) (`v0.4.0`) | the MuJoCo simulation only |
+| [mj_kdl_wrapper](https://github.com/vamsikalagaturu/mj_kdl_wrapper) (`v0.5.1`) | the MuJoCo simulation only |
 
 ## Build
 
