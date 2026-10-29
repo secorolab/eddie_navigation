@@ -1,0 +1,7 @@
+<library path="eddie_simulation_plugin">
+  <class name="eddie_navigation/EddieSimulationPlugin"
+         type="eddie_navigation::EddieSimulationPlugin"
+         base_class_type="bim_experiments::SimulationPlugin">
+    <description>Eddie control and sensors on the scenario simulator's shared MuJoCo world.</description>
+  </class>
+</library>

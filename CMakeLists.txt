@@ -21,6 +21,21 @@ find_package(nav2_behavior_tree REQUIRED)
 find_package(behaviortree_cpp REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
 
+option(EDDIE_SIM "Build the optional Eddie plugin for the shared scenario simulator" "$ENV{EDDIE_SIM}")
+if(EDDIE_SIM)
+  find_package(bim_experiments REQUIRED)
+  find_package(eddie_driver_ros REQUIRED)
+  find_package(pluginlib REQUIRED)
+  add_library(eddie_simulation_plugin SHARED src/simulation/eddie_simulation_plugin.cpp)
+  target_include_directories(eddie_simulation_plugin PRIVATE include)
+  target_link_libraries(eddie_simulation_plugin
+    bim_experiments::simulation_plugin_api eddie_driver_ros::eddie_simulation_adapter)
+  ament_target_dependencies(eddie_simulation_plugin pluginlib ament_index_cpp)
+  pluginlib_export_plugin_description_file(bim_experiments simulation_plugins.xml)
+  set_target_properties(eddie_simulation_plugin PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE)
+  install(TARGETS eddie_simulation_plugin LIBRARY DESTINATION lib)
+endif()
+
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/MotionConstraints.msg"
   "action/ConstrainedPass.action"
@@ -47,7 +62,7 @@ install(TARGETS constrained_pass eddie_zone_bt_nodes
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
-install(DIRECTORY launch config maps worlds behavior_trees
+install(DIRECTORY launch config maps behavior_trees
   DESTINATION share/${PROJECT_NAME}
 )
 install(PROGRAMS scripts/nav_waypoints.py

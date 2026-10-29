@@ -4,12 +4,19 @@ import os
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription, conditions
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import (Command, FindExecutable, LaunchConfiguration,
-                                  PathJoinSubstitution, PythonExpression)
+                                  PythonExpression)
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
+
+
+def validate_modes(context):
+    if all(context.launch_configurations[name].lower() == 'true'
+           for name in ('force_mode', 'impedance_mode')):
+        raise RuntimeError('force_mode and impedance_mode are exclusive')
+    return []
 
 
 def generate_launch_description():
@@ -21,18 +28,24 @@ def generate_launch_description():
                 get_package_share_directory(package), 'launch', launch_file)),
             launch_arguments=arguments.items(), **kwargs)
 
+    map_world = LaunchConfiguration('world')
+
     # the base spawns at the map origin with this heading, and amcl starts from the same pose
     start_yaw = PythonExpression(
-        ["{'nav_test': '0.0', 'secoro': '1.5708'}['", LaunchConfiguration('world'), "']"])
+        ["{'nav_test': '0.0', 'secoro': '1.5708', 'secoro_doors': '1.5708'}['",
+         map_world, "']"])
 
     # The driver runs on a wall timer in real time, so nothing here uses sim time.
-    eddie_driver = include('eddie_driver_ros', 'eddie_driver.launch.py', {
-        'io': 'mujoco',
+    # The scenario owns MuJoCo; Eddie is an optional in-process plugin.
+    eddie_driver = include('bim_experiments', 'scenario.launch.py', {
+        'world': LaunchConfiguration('world'),
         'viewer': LaunchConfiguration('viewer'),
-        'force_mode': LaunchConfiguration('force_mode'),
-        'impedance_mode': LaunchConfiguration('impedance_mode'),
-        'sim_world': PathJoinSubstitution(
-            [nav_dir, 'worlds', [LaunchConfiguration('world'), '.xml']]),
+        'plugins': 'eddie_navigation/EddieSimulationPlugin',
+        'robot_params': os.path.join(get_package_share_directory('eddie_driver'), 'config', 'eddie.yaml'),
+        'control_mode': PythonExpression([
+            "'wrench' if '", LaunchConfiguration('force_mode'), "'.lower() == 'true' else "
+            "('impedance' if '", LaunchConfiguration('impedance_mode'),
+            "'.lower() == 'true' else 'twist')"]),
         'sim_record': LaunchConfiguration('sim_record'),
         'sim_record_cameras': LaunchConfiguration('sim_record_cameras'),
         'sim_start_pose': ['0 0 ', start_yaw],
@@ -75,11 +88,12 @@ def generate_launch_description():
     navigation = include('eddie_navigation', 'eddie_nav_bringup.launch.py', {
         'use_sim_time': 'false',
         'simulation': 'false',
-        'map_name': [LaunchConfiguration('world'), '.yaml'],
+        'map_name': [map_world, '.yaml'],
         'initial_yaw': start_yaw,
         'zones_file': PythonExpression(
             ["{'nav_test': '', 'secoro': '", os.path.join(nav_dir, 'maps', 'secoro_zones.yaml'),
-             "'}['", LaunchConfiguration('world'), "']"]),
+             "', 'secoro_doors': '", os.path.join(nav_dir, 'maps', 'secoro_doors_zones.yaml'),
+             "'}['", map_world, "']"]),
     })
 
     rviz = Node(
@@ -95,7 +109,8 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        DeclareLaunchArgument('world', default_value='nav_test', choices=['nav_test', 'secoro'],
+        DeclareLaunchArgument('world', default_value='nav_test',
+                              choices=['nav_test', 'secoro', 'secoro_doors'],
                               description='worlds/<world>.xml, localized on maps/<world>.yaml'),
         DeclareLaunchArgument('viewer', default_value='false',
                               description='Open the MuJoCo viewer'),
@@ -109,6 +124,7 @@ def generate_launch_description():
         DeclareLaunchArgument('sim_record_cameras', default_value='top',
                               description='Cameras to record, space-separated (see '
                                           'eddie_driver_ros)'),
+        OpaqueFunction(function=validate_modes),
         eddie_driver,
         robot_state_publisher,
         joint_state_publisher,

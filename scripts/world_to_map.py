@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Rasterise a MuJoCo world (primitives, meshes) into a map_server map at the lidars' height.
 
-Usage: world_to_map.py worlds/nav_test.xml maps/nav_test  (needs the mujoco Python package)
+Usage: world_to_map.py ../bim-experiments/worlds/nav_test.xml maps/nav_test  (needs the mujoco Python package)
 """
 
 import argparse

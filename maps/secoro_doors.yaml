@@ -1,0 +1,10 @@
+# Extended south for the fixed elevator test entrance; leaf panels are dynamic.
+# secoro map with opening-1627 width 1.25 m; hinge 0.31 m from its wall corner.
+# bim-experiments gen/maps/uni-bremen_secoro (fbab13c), origin shifted by worlds/secoro.xml's body pos
+image: secoro_doors.pgm
+mode: trinary
+resolution: 0.05
+origin: [-7.130, -6.600, 0.0]
+negate: 0
+occupied_thresh: 0.65
+free_thresh: 0.196

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Write a world's zones (its doorways, with their motion constraints) in the map frame from FPM.
 
-Usage: zones_from_fpm.py <fpm json-ld dir> worlds/secoro.xml maps/secoro_zones.yaml
+Usage: zones_from_fpm.py <fpm json-ld dir> ../bim-experiments/worlds/secoro.xml maps/secoro_zones.yaml
 Needs scenery_builder's fpm package (the workspace .venv).
 """
 

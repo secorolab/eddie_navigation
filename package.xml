@@ -16,6 +16,7 @@
   <depend>geometry_msgs</depend>
   <depend>nav_msgs</depend>
   <depend>rclcpp</depend>
+  <depend>ament_index_cpp</depend>
   <depend>rclcpp_action</depend>
   <depend>tf2</depend>
   <depend>tf2_geometry_msgs</depend>
@@ -27,7 +28,9 @@
   <depend>nav2_bringup</depend>
   <depend>slam_toolbox</depend>
 
-  <exec_depend>eddie_driver_ros</exec_depend>
+  <depend>eddie_driver_ros</depend>
+  <depend>pluginlib</depend>
+  <depend>bim_experiments</depend>
   <exec_depend>eddie_description</exec_depend>
   <exec_depend>joy</exec_depend>
   <exec_depend>teleop_twist_joy</exec_depend>
